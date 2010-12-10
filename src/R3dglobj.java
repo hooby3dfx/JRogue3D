@@ -20,11 +20,11 @@ public class R3dglobj implements R3dBasicObject {
 	
 	//maybe use a shape for arrow, etc?
 	// a set of shapes
-	private static final int Triangle = 0, Torus = 1, Sphere = 2, 
+	public static final int Triangle = 0, Torus = 1, Sphere = 2, 
 		Icosahedron = 3, Teapot = 4, Cone = 5, Tetrahedron = 6;
 	// initial shape is a triangle
-	private int shape = Sphere;
-	private float size=.25f;
+	public int shape = Sphere;
+	public float size=.25f;
 	
 	// draw the current shape
 	
@@ -40,7 +40,7 @@ public class R3dglobj implements R3dBasicObject {
 			gl.glEnd();
 			break;
 		case Torus:
-			glut.glutSolidTorus(0.5f, 1.0f, 32, 32);
+			glut.glutSolidTorus(size, size*1.5, 32, 32);
 			break;
 		case Sphere:
 			glut.glutSolidSphere(size, 32, 32);
@@ -54,7 +54,7 @@ public class R3dglobj implements R3dBasicObject {
 			gl.glFrontFace(GL.GL_CCW);
 			break;
 		case Cone:
-			glut.glutSolidCone(1.0f, 2.5f, 32, 32);
+			glut.glutSolidCone(size, size*2, 32, 32);
 			break;
 		case Tetrahedron:
 			glut.glutSolidTetrahedron();

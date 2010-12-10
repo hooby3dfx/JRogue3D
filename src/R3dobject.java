@@ -27,6 +27,8 @@ public class R3dobject implements R3dBasicObject{
 		col=c;
 	}
 	
+	//texture code here?
+	
 
 	public void Draw(GL gl) {
 		vertexBuffer.rewind();

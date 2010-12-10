@@ -365,14 +365,21 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 		view.msg= new Message(view);
 		md_slurp();
 		try{
+			/*
 			URL doc= getCodeBase();
 			URL url= new URL(doc.getProtocol(), doc.getHost(), "cgi");
 			URLConnection connection = url.openConnection();
 			connection.connect();
-			ObjectInput in= new ObjectInputStream(connection.getInputStream());
+			*/
+
+			//ObjectInput in= new ObjectInputStream(connection.getInputStream());
+			System.out.println("did this1");
+
+			ObjectInput in= new ObjectInputStream( new DataInputStream(new FileInputStream("save.rogue")));
+			System.out.println("did this2");
 
 			String s= (String)in.readObject();
-			//System.out.println("Read from stream:"+s);
+			System.out.println("Read from stream:"+s);
 			starttime= (new Date()).getTime() - in.readLong();
 			Level l= (Level)in.readObject();
 			try{
@@ -433,14 +440,19 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 			connection.setRequestProperty("Content-Length", Integer.toString(baos.size()+name.length()+1));
 			connection.connect();
 			*/
+			
+			File outfile = new File("save.rogue");
+			//FileOutputStream printout= new FileOutputStream (outfile);
 
 			//DataOutputStream printout= new DataOutputStream (connection.getOutputStream ());
-			File outfile = new File("save");
-			FileOutputStream printout= new FileOutputStream (outfile);
+			DataOutputStream printout;
+			//DataOutputStream po= new DataOutputStream (new FileOutputStream (outfile));
+			printout=new DataOutputStream(new FileOutputStream (outfile));
 			
 			//printout.writeBytes(name+"\n");
-			String ss = name+"\n";
-			printout.write(ss.getBytes());
+			
+			//String ss = name+"\n";
+			//printout.write(ss.getBytes()); 
 			printout.write(baos.toByteArray(), 0, baos.size());
 			printout.flush();
 			printout.close();

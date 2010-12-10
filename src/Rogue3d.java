@@ -68,6 +68,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		//load all the Rogue3d stuff!
 		initRogue3dStuff();
 		
+		//need this to use tab key
 		canvas.setFocusTraversalKeysEnabled(false);
 		
 	}
@@ -175,7 +176,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	//backups
 	private float xpos1, ypos1, zpos1, centerx1, centery1, centerz1, roth1, rotv1;
 	
-	
+	//to change from follow view to fixed cam
 	private void swapCamVars(){
 		float t1,t2,t3,t4,t5,t6,t7,t8;
 		
@@ -210,8 +211,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	}
 	
 	private void focusCam(){
-		
-			
 		
 		gl.glTranslated(-roguex,-1,roguey);
 		
@@ -264,26 +263,22 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	
 	private void drawRogue(){
 		for(int i=1; i<myBuffer.length-1; i++){
-			//
+			
 			gl.glTranslated(1,0,0);
 			gl.glPushMatrix();
 			for(int j=0; j<myBuffer[i].length; j++){
 				
 				//calculate matrix!
-				//gl.glTranslated(0,0,0);
-				//gl.glTranslated(.3*(double)i,0,.3*(double)j);
+				
 				gl.glTranslated(0,0,-1);
 				drawObject(myBuffer[i][j]);
-				//gl.glTranslated(i,0,j);
 				
 				if(myBuffer[i][j]=='@'){
-					//save cam position based on this
+					//save 'cam' position based on this
 					setRogueSpot(i,j);
 				}
 				
 			}
-			//System.out.println();
-			//gl.glTranslated(2, 0, 0);
 
 			gl.glPopMatrix();
 		}
@@ -296,20 +291,16 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		//lookup char 
 		R3dBasicObject obj = objects.get(code);
 		
-		//
 		if(obj!=null){
 			//System.out.println("trying to draw: "+code);
-			
 			obj.Draw(this.gl);
 			
 			//set default color
 			loadDefaultColor();
 
-			
 			//always draw floor?
 			obj = objects.get('#');
 			obj.Draw(this.gl);
-			
 		
 		}
 		
@@ -347,7 +338,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		gl.glClearDepth(1.0f);
 		*/
 		
-		//from hierarchical
+		//from hierarchical:
 		gl = drawable.getGL();
 
 		initViewParameters();
@@ -429,7 +420,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 
 		float ball_r = (float) Math.sqrt((xmax-xmin)*(xmax-xmin)
 							+ (ymax-ymin)*(ymax-ymin)
-							+ (zmax-zmin)*(zmax-zmin)) * 0.707f;
+							+ (zmax-zmin)*(zmax-zmin)) * 0.307f;//0.707f;
 
 		centerx = (xmax+xmin)/2.f;
 		centery = (ymax+ymin)/2.f;
@@ -532,7 +523,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		
 	}
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+
 		switch(e.getKeyCode()) {
 		
 		//use this to set cam on rogue
@@ -551,7 +542,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 			
 			focusGo=!focusGo;
 			canvas.display();
-			//return;
 			break;
 		case KeyEvent.VK_ALT:
 			System.out.println("alt toggle");
@@ -577,6 +567,8 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	// these event functions are not used for this assignment
 	// but may be useful in the future
 	public void keyTyped(KeyEvent e) { 
+		//do this to prevent key from going to applet
+		//most keys are needed, so use sparingly
 		if(e.getKeyChar()=='\t'){
 			System.out.println("tab skipping");
 			return;

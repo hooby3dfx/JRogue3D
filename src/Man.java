@@ -34,7 +34,7 @@ class Man extends Persona implements Serializable {
 	String hunger_str= "";
 	boolean trap_door;
 	
-	static final int SAVELEVEL= 1;	// lowest level that Save can be done 
+	static final int SAVELEVEL= 7;	// lowest level that Save can be done 
 	static final char RELOAD='\034';
 	static final char WELCOME='\035';
 	
