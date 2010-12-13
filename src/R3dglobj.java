@@ -40,7 +40,7 @@ public class R3dglobj implements R3dBasicObject {
 			gl.glEnd();
 			break;
 		case Torus:
-			glut.glutSolidTorus(size, size*1.5, 32, 32);
+			glut.glutSolidTorus(size, size*1.2, 32, 32);
 			break;
 		case Sphere:
 			glut.glutSolidSphere(size, 32, 32);

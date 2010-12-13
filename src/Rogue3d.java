@@ -65,8 +65,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		setVisible(true);
 		canvas.requestFocus();
 		
-		//load all the Rogue3d stuff!
-		initRogue3dStuff();
 		
 		//need this to use tab key
 		canvas.setFocusTraversalKeysEnabled(false);
@@ -76,31 +74,15 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	// gl display function
 	public void display(GLAutoDrawable drawable) {
 		
-		// if mouse is clicked, we need to detect whether it's clicked on the shape
-		/*
-		if (mouseClick) {
-			ByteBuffer pixel = ByteBuffer.allocateDirect(1);
-
-			gl.glClear( GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
-			gl.glColor3f(1.0f, 1.0f, 1.0f);
-			gl.glDisable( GL.GL_LIGHTING );
-			drawShape();
-			gl.glReadPixels(mouseX, (winH-1-mouseY), 1, 1, GL.GL_RED, GL.GL_UNSIGNED_BYTE, pixel);
-			
-			if (pixel.get(0) == (byte)255) {
-				// mouse clicked on the shape, set clickedOnShape to true
-				clickedOnShape = true;
-			}
-			// set mouseClick to false to avoid detecting again
-			mouseClick = false;
-		}
-		*/
+		
 
 		// shade the current shape
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		//first text
+		
 		gl.glDisable(GL.GL_LIGHTING);
+
 		gl.glLoadIdentity();
 		gl.glTranslated(0, 0, -4f);
 		gl.glColor3f(0, 1f, 0);
@@ -112,8 +94,12 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 				for(int i=0; i<myBuffer.length; i++){
 					
 					gl.glRasterPos2d(bx, by);
+				    //gl.glDisable(GL.GL_DEPTH_TEST);
+
 					glut.glutBitmapString(GLUT.BITMAP_8_BY_13, new String(myBuffer[i]));
 					by-=.1;
+				   // gl.glEnable(GL.GL_DEPTH_TEST);
+
 	
 				}
 			}
@@ -133,10 +119,17 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 			}
 			
 		}
+		gl.glColor3f(1, 1, 1);
+
+		
+	    //gl.glEnable(GL.GL_DEPTH_TEST);
+
 		gl.glEnable(GL.GL_LIGHTING);
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, drawWireframe ? GL.GL_LINE : GL.GL_FILL);
-		
-		loadDefaultColor();
+		gl.glShadeModel(GL.GL_SMOOTH);
+		gl.glEnable(GL.GL_CULL_FACE);
+
+		//loadDefaultColor();
 
 		gl.glLoadIdentity();
 
@@ -154,12 +147,12 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		
 		if(myBuffer!=null)
 			drawRogue();
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+		//gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 
 	}
 	
-	private float spin1 = 1f;
-	private float spin2 = 0f;
+	private float spin1 = 0f;
+	private float spin2 = 1f;
 	
 	private void swapSpin(){
 		System.out.println("spin swap");
@@ -235,8 +228,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		
 		objects = new HashMap<Character,R3dBasicObject>();
 		//load em up!
-		
-		loader.load(objects);
+		loader.load(objects, gl, glu);
 		
 		//maybe keep these in a text file of assets
 		
@@ -251,6 +243,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 
 		for(int i=0; i<myBuffer.length; i++){
 			for(int j=0; j<myBuffer[i].length; j++){
+				//have to do this to get the right chars
 				myBuffer[i][j]=(char)(byte)(myBuffer[i][j]&127);
 
 			}
@@ -295,11 +288,8 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 			//System.out.println("trying to draw: "+code);
 			obj.Draw(this.gl);
 			
-			//set default color
-			loadDefaultColor();
-
 			//always draw floor?
-			obj = objects.get('#');
+			obj = objects.get('.');
 			obj.Draw(this.gl);
 		
 		}
@@ -343,9 +333,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 
 		initViewParameters();
 		
-		//check
-		gl.glColorMaterial(GL.GL_FRONT, GL.GL_DIFFUSE);
-		gl.glEnable( GL.GL_COLOR_MATERIAL ) ;
 		
 		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
@@ -395,6 +382,9 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, bmat_diffuse, 0);
 	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SHININESS, bmat_shininess, 0);
 	    */
+		gl.glColorMaterial(GL.GL_FRONT, GL.GL_DIFFUSE);
+		gl.glEnable( GL.GL_COLOR_MATERIAL ) ;
+
 
 	    float lmodel_ambient[] = { .5f, .5f, .5f, 1 };
 	    gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
@@ -412,28 +402,45 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		gl.glCullFace(GL.GL_BACK);
 		gl.glEnable(GL.GL_CULL_FACE);
 		gl.glShadeModel(GL.GL_SMOOTH);
+		//gl.glEnable(GL.GL_TEXTURE_2D);
+
+
+		//load all the Rogue3d stuff!
+		initRogue3dStuff();
 	}
 	
 	void initViewParameters()
 	{
+		/*
 		roth = rotv = 0;
 
 		float ball_r = (float) Math.sqrt((xmax-xmin)*(xmax-xmin)
 							+ (ymax-ymin)*(ymax-ymin)
 							+ (zmax-zmin)*(zmax-zmin)) * 0.307f;//0.707f;
 
-		centerx = (xmax+xmin)/2.f;
-		centery = (ymax+ymin)/2.f;
-		centerz = (zmax+zmin)/2.f;
+		
 		xpos = centerx;
 		ypos = centery;
 		zpos = ball_r/(float) Math.sin(45.f*Math.PI/180.f)+centerz;
-
+	*/
 		znear = 0.01f;
 		zfar  = 1000.f;
+		centerx = (xmax+xmin)/2.f;
+		centery = (ymax+ymin)/2.f;
+		centerz = (zmax+zmin)/2.f;
+		xpos=40;
+		ypos=-20;
+		zpos=60;
+		roth=90;
+		rotv=-81;
 
 		//motionSpeed = 0.002f * ball_r;
 		//rotateSpeed = 0.1f;
+		
+		//good starting vals:
+		//x41.0y-22.0z60.0rh90.0rv-81.0cx0.0cy0.0cz0.0
+
+		
 
 	}
 
@@ -520,6 +527,8 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 			mouseY = y;
 			canvas.display();
 		}
+		
+		System.out.println("x"+xpos+"y"+ypos+"z"+zpos+"rh"+roth+"rv"+rotv);
 		
 	}
 	public void keyPressed(KeyEvent e) {
