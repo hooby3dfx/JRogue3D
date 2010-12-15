@@ -23,10 +23,12 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	
 
 	// gl shading/transformation variables
+	/*
 	private float tx = 0.0f, ty = 0.0f;
 	private float scale = 1.0f;
 	private float angle = 0.0f;
 	private float xangle = 0.0f;
+	*/
 	private boolean drawWireframe = false;
 	
 	
@@ -129,20 +131,27 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		gl.glShadeModel(GL.GL_SMOOTH);
 		gl.glEnable(GL.GL_CULL_FACE);
 
-		//loadDefaultColor();
-
 		gl.glLoadIdentity();
 
 		gl.glTranslatef(-xpos, -ypos, -zpos);
 		gl.glTranslatef(centerx, centery, centerz);
 		gl.glRotatef(360.f - roth, 0, 1f, 0);
-		//gl.glRotatef(rotv, spin1, 0, 0);
-		gl.glRotatef(rotv, spin1, 0, spin2);
+
+		//whoa
+		if(spinup){
+			gl.glRotatef(rotv, 0, 0, 1f);
+			gl.glRotatef(rotvb, 1f, 0, 0);
+		}else{
+			gl.glRotatef(rotv, 1f, 0, 0);
+			gl.glRotatef(rotvb, 0, 0, 1f);
+		}
+		
+		
+		
 		gl.glTranslatef(-centerx, -centery, -centerz);	
 		
 		if(focusGo){
 			focusCam();
-			//focusGo=false;
 		}
 		
 		if(myBuffer!=null)
@@ -151,14 +160,15 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 
 	}
 	
-	private float spin1 = 0f;
-	private float spin2 = 1f;
+	
+	private float rotvb=0;
+	private boolean spinup = true;
 	
 	private void swapSpin(){
-		System.out.println("spin swap");
-		float t = spin1;
-		spin1=spin2;
-		spin2=t;
+		float temp = rotv;
+		rotv=rotvb;
+		rotvb=temp;
+		spinup=!spinup;
 	}
 
 	private void loadDefaultColor(){
@@ -167,11 +177,11 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	private boolean focusGo=false;
 	
 	//backups
-	private float xpos1, ypos1, zpos1, centerx1, centery1, centerz1, roth1, rotv1;
+	private float xpos1, ypos1, zpos1, centerx1, centery1, centerz1, roth1, rotv1, rotvb1;
 	
 	//to change from follow view to fixed cam
 	private void swapCamVars(){
-		float t1,t2,t3,t4,t5,t6,t7,t8;
+		float t1,t2,t3,t4,t5,t6,t7,t8,t9;
 		
 		t1=xpos;
 		t2=ypos;
@@ -181,6 +191,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		t6=centerz;
 		t7=roth;
 		t8=rotv;
+		t9=rotvb1;
 		
 		
 		xpos=xpos1;
@@ -191,6 +202,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		centerz=centerz1;
 		roth=roth1;
 		rotv=rotv1;
+		rotvb=rotvb1;
 		
 		xpos1=t1;
 		ypos1=t2;
@@ -200,6 +212,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		centerz1=t6;
 		roth1=t7;
 		rotv1=t8;
+		rotvb1=t9;
 		
 	}
 	
@@ -295,7 +308,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		}
 		
 		loadDefaultColor();
-
 		
 	}
 	
@@ -332,8 +344,6 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		gl = drawable.getGL();
 
 		initViewParameters();
-		
-		
 		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
 		gl.glClearDepth(1.0f);
@@ -411,18 +421,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	
 	void initViewParameters()
 	{
-		/*
-		roth = rotv = 0;
-
-		float ball_r = (float) Math.sqrt((xmax-xmin)*(xmax-xmin)
-							+ (ymax-ymin)*(ymax-ymin)
-							+ (zmax-zmin)*(zmax-zmin)) * 0.307f;//0.707f;
-
 		
-		xpos = centerx;
-		ypos = centery;
-		zpos = ball_r/(float) Math.sin(45.f*Math.PI/180.f)+centerz;
-	*/
 		znear = 0.01f;
 		zfar  = 1000.f;
 		centerx = (xmax+xmin)/2.f;
@@ -434,12 +433,9 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		roth=90;
 		rotv=-81;
 
-		//motionSpeed = 0.002f * ball_r;
-		//rotateSpeed = 0.1f;
 		
 		//good starting vals:
 		//x41.0y-22.0z60.0rh90.0rv-81.0cx0.0cy0.0cz0.0
-
 		
 
 	}
@@ -465,8 +461,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 
 	// mouse pressed even callback function
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		//mouseClick = true;
+		
 		mouseX = e.getX();
 		mouseY = e.getY();
 		mouseButton = e.getButton();
@@ -474,39 +469,14 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		//clickedOnShape = false;
+		
 		mouseButton = MouseEvent.NOBUTTON;
 
 		canvas.display();
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		/*
-		if (!clickedOnShape)	return;
-
-		int x = e.getX();
-		int y = e.getY();
-		if (mouseButton == MouseEvent.BUTTON3) {
-			// right button scales
-			scale += (y - mouseY) * 0.01f;
-		}
-		else if (mouseButton == MouseEvent.BUTTON2) {
-			// middle button translates
-			tx += (x - mouseX) * 0.01f;
-			ty -= (y - mouseY) * 0.01f;
-		}
-		else if (mouseButton == MouseEvent.BUTTON1 && shiftKeyDown){
-			xangle += (x - mouseX);
-		}
-		else if (mouseButton == MouseEvent.BUTTON1) {
-			// left button rotates
-			angle += (y - mouseY);
-		}
-		mouseX = x;
-		mouseY = y;
-		canvas.display(); */
+		
 		int x = e.getX();
 		int y = e.getY();
 		if (mouseButton == MouseEvent.BUTTON3 ) {
@@ -528,7 +498,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 			canvas.display();
 		}
 		
-		System.out.println("x"+xpos+"y"+ypos+"z"+zpos+"rh"+roth+"rv"+rotv);
+		//System.out.println("x"+xpos+"y"+ypos+"z"+zpos+"rh"+roth+"rv"+rotv);
 		
 	}
 	public void keyPressed(KeyEvent e) {
@@ -579,7 +549,7 @@ public class Rogue3d extends JFrame implements GLEventListener, KeyListener, Mou
 		//do this to prevent key from going to applet
 		//most keys are needed, so use sparingly
 		if(e.getKeyChar()=='\t'){
-			System.out.println("tab skipping");
+			//System.out.println("tab skipping");
 			return;
 		}
 		//System.out.println(e.getKeyChar());

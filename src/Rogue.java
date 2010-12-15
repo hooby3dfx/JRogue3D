@@ -359,6 +359,8 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 		return dst;
 	}
 	public boolean read_game(String name){
+		System.out.println("loady");
+
 		if(name==null || 0==name.compareToIgnoreCase("rogue"))
 			return false;
 		name= name.replace(' ', '_');
@@ -373,10 +375,10 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 			*/
 
 			//ObjectInput in= new ObjectInputStream(connection.getInputStream());
-			System.out.println("did this1");
+			int p = name.indexOf(",");
+			String sname = name.substring(0, p);
 
-			ObjectInput in= new ObjectInputStream( new DataInputStream(new FileInputStream("save.rogue")));
-			System.out.println("did this2");
+			ObjectInput in= new ObjectInputStream( new DataInputStream(new FileInputStream(sname+".rogue")));
 
 			String s= (String)in.readObject();
 			System.out.println("Read from stream:"+s);
@@ -412,6 +414,7 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 		return true;
 	}
 	public boolean send_game(String name){
+		System.out.println("savey");
 		name= name.replace(' ', '_');
 		URL url= null;
 		String sret= null;
@@ -440,8 +443,10 @@ public class Rogue extends Applet implements Runnable, Header, Serializable{
 			connection.setRequestProperty("Content-Length", Integer.toString(baos.size()+name.length()+1));
 			connection.connect();
 			*/
+			int p = name.indexOf(",");
+			String sname = name.substring(0, p);
 			
-			File outfile = new File("save.rogue");
+			File outfile = new File(sname+".rogue");
 			//FileOutputStream printout= new FileOutputStream (outfile);
 
 			//DataOutputStream printout= new DataOutputStream (connection.getOutputStream ());

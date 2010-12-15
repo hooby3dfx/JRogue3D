@@ -3,6 +3,8 @@ import javax.media.opengl.GL;
 import com.sun.opengl.util.GLUT;
 import javax.vecmath.Color3f;
 
+//class for using glut shapes
+//borrowed from warmup
 
 public class R3dglobj implements R3dBasicObject {
 	
@@ -40,7 +42,7 @@ public class R3dglobj implements R3dBasicObject {
 			gl.glEnd();
 			break;
 		case Torus:
-			glut.glutSolidTorus(size, size*1.2, 32, 32);
+			glut.glutSolidTorus(size, size*3, 32, 32);
 			break;
 		case Sphere:
 			glut.glutSolidSphere(size, 32, 32);

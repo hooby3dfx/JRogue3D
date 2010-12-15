@@ -85,10 +85,9 @@ public class R3dobject implements R3dBasicObject{
 		if(hasTexture){
 			gl.glColor3f(1, 1, 1);
 			gl.glEnable(GL.GL_TEXTURE_2D);
-			//System.out.println("yo");
 
 			gl.glBindTexture(GL.GL_TEXTURE_2D, texture);
-			int numcoords = texCoords.size();
+			//int numcoords = texCoords.size();
 			
 			int i;
 			gl.glBegin(GL.GL_TRIANGLES);
@@ -103,12 +102,9 @@ public class R3dobject implements R3dBasicObject{
 				gl.glNormal3f(input_norms.get(i).x, input_norms.get(i).y, input_norms.get(i).z);
 				gl.glVertex3f(input_verts.get(vid).x, input_verts.get(vid).y, input_verts.get(vid).z);
 				
-				
 			}
 			gl.glEnd();
 			gl.glDisable(GL.GL_TEXTURE_2D);
-
-			
 			
 		}else{
 			
@@ -134,10 +130,7 @@ public class R3dobject implements R3dBasicObject{
 		
 			//gl.glDisable( GL.GL_COLOR_MATERIAL ) ;
 			 
-			 
-
 		}
-		
 		
 	}
 	
@@ -274,98 +267,92 @@ public class R3dobject implements R3dBasicObject{
 		center.x = center.y = center.z = 0.f;
 		
 		if(!tex){
-		/* estimate per vertex average normal */
-		
-		int i;
-		for (i = 0; i < input_verts.size(); i ++) {
-			input_norms.add(new Vector3f());
-		}
-		
-		Vector3f e1 = new Vector3f();
-		Vector3f e2 = new Vector3f();
-		Vector3f tn = new Vector3f();
-		for (i = 0; i < input_faces.size(); i += 3) {
-			v1 = input_faces.get(i+0);
-			v2 = input_faces.get(i+1);
-			v3 = input_faces.get(i+2);
+			/* estimate per vertex average normal */
 			
-			e1.sub(input_verts.get(v2), input_verts.get(v1));
-			e2.sub(input_verts.get(v3), input_verts.get(v1));
-			tn.cross(e1, e2);
-			input_norms.get(v1).add(tn);
+			int i;
+			for (i = 0; i < input_verts.size(); i ++) {
+				input_norms.add(new Vector3f());
+			}
 			
-			e1.sub(input_verts.get(v3), input_verts.get(v2));
-			e2.sub(input_verts.get(v1), input_verts.get(v2));
-			tn.cross(e1, e2);
-			input_norms.get(v2).add(tn);
+			Vector3f e1 = new Vector3f();
+			Vector3f e2 = new Vector3f();
+			Vector3f tn = new Vector3f();
+			for (i = 0; i < input_faces.size(); i += 3) {
+				v1 = input_faces.get(i+0);
+				v2 = input_faces.get(i+1);
+				v3 = input_faces.get(i+2);
+				
+				e1.sub(input_verts.get(v2), input_verts.get(v1));
+				e2.sub(input_verts.get(v3), input_verts.get(v1));
+				tn.cross(e1, e2);
+				input_norms.get(v1).add(tn);
+				
+				e1.sub(input_verts.get(v3), input_verts.get(v2));
+				e2.sub(input_verts.get(v1), input_verts.get(v2));
+				tn.cross(e1, e2);
+				input_norms.get(v2).add(tn);
+				
+				e1.sub(input_verts.get(v1), input_verts.get(v3));
+				e2.sub(input_verts.get(v2), input_verts.get(v3));
+				tn.cross(e1, e2);
+				input_norms.get(v3).add(tn);			
+			}
 			
-			e1.sub(input_verts.get(v1), input_verts.get(v3));
-			e2.sub(input_verts.get(v2), input_verts.get(v3));
-			tn.cross(e1, e2);
-			input_norms.get(v3).add(tn);			
-		}
-		
-		/* convert to buffers to improve display speed */
-		
-		for (i = 0; i < input_verts.size(); i ++) {
-			input_norms.get(i).normalize();
-		}
-		
-		vertexBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-		normalBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-		faceBuffer = BufferUtil.newIntBuffer(input_faces.size());
-		
-		for (i = 0; i < input_verts.size(); i ++) {
-			vertexBuffer.put(input_verts.get(i).x);
-			vertexBuffer.put(input_verts.get(i).y);
-			vertexBuffer.put(input_verts.get(i).z);
-			normalBuffer.put(input_norms.get(i).x);
-			normalBuffer.put(input_norms.get(i).y);
-			normalBuffer.put(input_norms.get(i).z);			
-		}
-		
-		for (i = 0; i < input_faces.size(); i ++) {
-			faceBuffer.put(input_faces.get(i));	
-		}			
-		num_verts = input_verts.size();
-		num_faces = input_faces.size()/3;
-		
-		
+			/* convert to buffers to improve display speed */
+			
+			for (i = 0; i < input_verts.size(); i ++) {
+				input_norms.get(i).normalize();
+			}
+			
+			vertexBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
+			normalBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
+			faceBuffer = BufferUtil.newIntBuffer(input_faces.size());
+			
+			for (i = 0; i < input_verts.size(); i ++) {
+				vertexBuffer.put(input_verts.get(i).x);
+				vertexBuffer.put(input_verts.get(i).y);
+				vertexBuffer.put(input_verts.get(i).z);
+				normalBuffer.put(input_norms.get(i).x);
+				normalBuffer.put(input_norms.get(i).y);
+				normalBuffer.put(input_norms.get(i).z);			
+			}
+			
+			for (i = 0; i < input_faces.size(); i ++) {
+				faceBuffer.put(input_faces.get(i));	
+			}			
+			num_verts = input_verts.size();
+			num_faces = input_faces.size()/3;
+			
+			
 			
 		}else{
-		int i;
-
 		
+			int i;
 		
-		
-		
-		input_norms.clear();
-		for (i = 0; i < input_faces.size(); i ++) {
-			input_norms.add(new Vector3f());
-		}
-		
-		Vector3f e1 = new Vector3f();
-		Vector3f e2 = new Vector3f();
-		for (i = 0; i < input_faces.size()/3; i ++) {
-			// get face
-			 v1 = input_faces.get(3*i+0);
-			 v2 = input_faces.get(3*i+1);
-			 v3 = input_faces.get(3*i+2);
+			input_norms.clear();
+			for (i = 0; i < input_faces.size(); i ++) {
+				input_norms.add(new Vector3f());
+			}
 			
-			// compute normal
-			e1.sub(input_verts.get(v2), input_verts.get(v1));
-			e2.sub(input_verts.get(v3), input_verts.get(v1));
-			input_norms.get(i*3+0).cross(e1, e2);
-			input_norms.get(i*3+0).normalize();
-			input_norms.get(i*3+1).cross(e1, e2);
-			input_norms.get(i*3+1).normalize();
-			input_norms.get(i*3+2).cross(e1, e2);
-			input_norms.get(i*3+2).normalize();
+			Vector3f e1 = new Vector3f();
+			Vector3f e2 = new Vector3f();
+			for (i = 0; i < input_faces.size()/3; i ++) {
+				// get face
+				 v1 = input_faces.get(3*i+0);
+				 v2 = input_faces.get(3*i+1);
+				 v3 = input_faces.get(3*i+2);
+				
+				// compute normal
+				e1.sub(input_verts.get(v2), input_verts.get(v1));
+				e2.sub(input_verts.get(v3), input_verts.get(v1));
+				input_norms.get(i*3+0).cross(e1, e2);
+				input_norms.get(i*3+0).normalize();
+				input_norms.get(i*3+1).cross(e1, e2);
+				input_norms.get(i*3+1).normalize();
+				input_norms.get(i*3+2).cross(e1, e2);
+				input_norms.get(i*3+2).normalize();
+			}
 		}
-		}
-		
-		
-		
 		
 	}	
 	

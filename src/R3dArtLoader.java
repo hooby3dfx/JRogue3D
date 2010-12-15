@@ -48,8 +48,9 @@ public class R3dArtLoader {
 		objects.put('#', thing);
 		
 		//% stairs down
-		thing = new R3dobject(path+"ladder.obj",false);
-		thing.setCol(  new Color3f(.4f,.5f,.2f));
+		thing = new R3dobject(path+"ladder.obj",true);
+		//thing.setCol(  new Color3f(.4f,.5f,.2f));
+		((R3dobject)thing).setTexture(path+"ladder.jpg",gl, glu);
 		objects.put('%', thing);
 
 		//gold
@@ -114,8 +115,9 @@ public class R3dArtLoader {
 		
 		
 		//^ trap
-		thing = new R3dobject(path+"gibtrap.obj",false);
-		thing.setCol(  new Color3f(.6f,.3f,.1f));
+		thing = new R3dobject(path+"gibtrap.obj",true);
+		((R3dobject)thing).setTexture(path+"gibtrap.jpg",gl, glu);
+		//thing.setCol(  new Color3f(.6f,.3f,.1f));
 		objects.put('^', thing);
 		
 		//R rattlesnake
@@ -130,7 +132,7 @@ public class R3dArtLoader {
 		((R3dobject)thing).setTexture(path+"armor.jpg",gl, glu);
 		objects.put(']', thing);
 		
-		// ) arrow
+		// ) arrow or weapon
 		thing = new R3dglobj();
 		thing.setCol(  new Color3f(.1f,.1f,.1f));
 		objects.put(')', thing);
@@ -156,7 +158,7 @@ public class R3dArtLoader {
 		thing = new R3dglobj();
 		thing.setCol(  new Color3f(.3f,.1f,.5f));
 		((R3dglobj)thing).shape=R3dglobj.Torus;
-		((R3dglobj)thing).size=.1f;
+		((R3dglobj)thing).size=.05f;
 		objects.put('=', thing);
 		
 		// / wand
@@ -174,9 +176,29 @@ public class R3dArtLoader {
 		
 		
 		//Q quagga
-				
+		thing = new R3dobject(path+"rhino.obj",true);
+		((R3dobject)thing).setTexture(path+"rhino.jpg",gl, glu);
+		objects.put('Q', thing);
 		
+		//N nymph
+		thing = new R3dobject(path+"pixie.obj",true);
+		((R3dobject)thing).setTexture(path+"pixie.png",gl, glu);
+		objects.put('N', thing);
 		
+		//pretty good through level 10
+		//more?
+		
+		//Y yeti
+		thing = new R3dobject(path+"bauul.obj",true);
+		((R3dobject)thing).setTexture(path+"bauul.jpg",gl, glu);
+		objects.put('Y', thing);
+		
+		//A aquator
+		thing = new R3dobject(path+"ratspike.obj",true);
+		((R3dobject)thing).setTexture(path+"ratspike.jpg",gl, glu);
+		objects.put('A', thing);
+		
+		//W wraith
 		
 		
 		
